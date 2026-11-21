@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Desempenho dos Alunos</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Alunos">
+<meta name="theme-color" content="#f2e6c8">
+<style>
+:root{--bg:#fbf5e6;--card:#fffaf0;--ink:#2b3a4f;--mut:#6b7a8f;--blue:#7fa8d1;--blue-d:#4f7fae;--line:#e6dcc3;--top:#f2e6c8;--ok:#4f9a78;--bad:#c9675f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--top:#2f3d52;--bg:#1d2633;--card:#263244;--ink:#f3ead6;--mut:#a9b6c8;--blue:#7fa8d1;--blue-d:#9cc0e4;--line:#38465c}}
+:root[data-theme="dark"]{--top:#2f3d52;--bg:#1d2633;--card:#263244;--ink:#f3ead6;--mut:#a9b6c8;--blue:#7fa8d1;--blue-d:#9cc0e4;--line:#38465c}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.4}
+.wrap{max-width:560px;margin:0 auto;padding:16px}
+.top{background:var(--top);color:var(--ink);border-bottom:3px solid var(--blue);border-radius:0 0 22px 22px;padding:16px;text-align:center;position:sticky;top:0;z-index:5}
+.top h1{margin:0;font-size:18px;font-weight:600}
+.top .nota{font-size:34px;font-weight:700;margin:4px 0 0;color:var(--blue-d)}.top small{color:var(--mut)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin:12px 0}
+h2{font-size:16px;margin:0 0 8px}
+input,button,select{font:inherit;color:var(--ink)}
+input,select{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px;min-width:0}
+button{background:var(--blue);color:#fff;border:0;border-radius:10px;padding:9px 14px;cursor:pointer}
+button.ghost{background:transparent;color:var(--blue-d);border:1px solid var(--blue)}
+button.x{background:transparent;color:var(--bad);padding:2px 8px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.row>input{flex:1}
+.stu{display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid var(--line);cursor:pointer}
+.stu:last-child{border:0}.pill{background:var(--blue);color:#fff;border-radius:99px;padding:2px 10px;font-size:13px}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}.tabs button{background:var(--card);color:var(--ink);border:1px solid var(--line);white-space:nowrap}
+.tabs button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.stat{background:var(--bg);border-radius:12px;padding:10px;text-align:center}
+.stat b{display:block;font-size:22px}.stat span{font-size:12px;color:var(--mut)}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.mut{color:var(--mut);font-size:13px}
+.hist{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.chart{overflow-x:auto}
+body{font-size:15px;-webkit-font-smoothing:antialiased}
+.wrap{padding:14px 14px 40px}
+.top{box-shadow:0 4px 14px rgba(79,127,174,.14);padding:14px 16px 12px}
+.top #tt{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:700}
+.top .nota{display:inline-block;margin:6px 0 2px;padding:0 24px;border-radius:99px;background:var(--blue);color:#fff;font-size:36px;line-height:1.3}
+.card{border-radius:20px;padding:16px;box-shadow:0 2px 10px rgba(120,100,60,.09);animation:up .25s ease both}
+@keyframes up{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h2{font-size:17px;margin:0 0 12px;font-weight:650}
+button{min-height:42px;font-weight:600;transition:transform .1s,filter .15s;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+button:active{transform:scale(.97)}button:hover{filter:brightness(1.06)}
+button.ghost,button.x{box-shadow:none}
+input,select{min-height:42px;border-radius:12px;font-size:16px}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--blue-d);outline-offset:1px}
+.row>input{min-width:110px}
+.stu{border:0;border-radius:14px;padding:10px 12px;margin:0 0 8px;background:var(--bg);gap:12px;justify-content:flex-start}
+.stu:active{transform:scale(.99)}
+.av{width:40px;height:40px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:700;flex:none}
+.nm{flex:1;font-weight:600}
+.pill{min-width:48px;text-align:center;font-weight:700;padding:4px 10px}
+.pill.g{background:var(--ok)}.pill.y{background:#d9a441}.pill.r{background:var(--bad)}
+.tabs{gap:8px;padding:2px 0 6px;scrollbar-width:none}
+.tabs button{border-radius:99px;min-height:38px;padding:6px 14px;box-shadow:none}
+.tabs button.on{box-shadow:0 2px 6px rgba(79,127,174,.35)}
+.stat{padding:14px 8px;border:1px solid var(--line)}.stat b{font-size:26px}
+.hist{padding:10px 2px}
+body{line-height:1.55;letter-spacing:0;word-spacing:normal;text-align:left;overflow-wrap:anywhere}
+h2{line-height:1.35;margin:0 0 12px}
+.card>.mut{margin-top:6px;line-height:1.5}
+.card>h2+.mut{margin-top:-6px;margin-bottom:10px}
+.mut{font-size:13px;line-height:1.5}
+.top #tt{letter-spacing:.04em;line-height:1.3}
+.top small{display:block;margin-top:2px;line-height:1.4;font-size:12px}
+.stat span{display:block;margin-top:4px;line-height:1.35;font-size:12px}
+.stat b{line-height:1.2}
+.grid{gap:10px}
+.hist{gap:12px;line-height:1.55;align-items:center}
+.hist>div{line-height:1.6}
+.hist .mut{display:inline-block;margin:2px 0}
+.row{gap:10px}
+.row>input{flex:1 1 130px;min-width:0;font-size:15px}
+.row>select{flex:1 1 100%}
+.tabs button{line-height:1.2;white-space:nowrap}
+.pill{line-height:1.4}
+.nm{line-height:1.3}
+.top{padding-left:56px;padding-right:56px}
+#mb{position:absolute;right:10px;top:10px;width:44px;padding:0;display:grid;place-items:center;background:transparent;color:var(--ink);box-shadow:none}
+#menu{position:absolute;right:12px;top:58px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:6px;min-width:200px;z-index:20;text-align:left}
+#menu[hidden]{display:none}
+#menu button{display:block;width:100%;background:transparent;color:var(--ink);text-align:left;box-shadow:none;border-radius:10px}
+#menu button:hover{background:var(--bg)}
+.upl{background:var(--blue);color:#fff;border-radius:12px;padding:12px 18px;font-weight:600;display:inline-block;cursor:pointer;text-align:center;flex:1 1 100%}
+.upl:active{transform:scale(.98)}
+html{-webkit-text-size-adjust:100%}button,.stu{-webkit-tap-highlight-color:transparent}
+.ic{width:1.15em;height:1.15em;vertical-align:-.2em;flex:none}
+.card{animation:none}
+#app.go>.card{animation:up .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+#app.go .fill{transform-origin:left;animation:grow .8s .2s cubic-bezier(.2,.8,.2,1) both}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+#app.go .chart path[stroke-width="2.5"]{stroke-dasharray:1;animation:draw .9s .25s ease-out both}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+#app.go .chart circle,#app.go .chart text,#app.go .chart rect{animation:fade .5s .7s both}
+@keyframes pop{0%{transform:scale(.9)}60%{transform:scale(1.06)}100%{transform:scale(1)}}
+#app.go .tabs button.on{animation:pop .35s ease}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.av .ic{width:20px;height:20px}
+#menu button{display:flex;align-items:center;gap:10px}
+.hist>.ed{margin-left:auto}
+/* ---- melhorias de interface ---- */
+#mb,#menu{display:none!important}
+.top{padding-left:16px;padding-right:16px}
+.wrap{padding-bottom:104px}
+#bn{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;gap:8px;background:var(--card);border-top:1px solid var(--line);padding:6px 12px calc(6px + env(safe-area-inset-bottom,0px));box-shadow:0 -4px 14px rgba(0,0,0,.06)}
+#bn button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;background:transparent;color:var(--mut);box-shadow:none;font-size:12px;min-height:50px;border-radius:14px;padding:6px}
+#bn button.on{color:var(--blue-d);background:var(--bg)}
+#bn svg{width:22px;height:22px}
+h2{position:relative;padding-left:12px}
+h2::before{content:"";position:absolute;left:0;top:.18em;bottom:.18em;width:4px;border-radius:4px;background:var(--blue)}
+.tp{display:inline-block;font-size:11px;font-weight:700;padding:1px 9px;border-radius:99px;margin-top:3px;line-height:1.5}
+.tp1{background:rgba(127,168,209,.25);color:var(--blue-d)}
+.tp2{background:rgba(217,164,65,.25);color:#c58b1f}
+.tp3{background:var(--bg);color:var(--mut);border:1px solid var(--line)}
+.empty{text-align:center;padding:22px 12px;color:var(--mut);line-height:1.6;border:2px dashed var(--line);border-radius:16px}
+.empty b{color:var(--ink);font-size:16px}
+.stu{border:1px solid var(--line);transition:background .15s,transform .1s}
+.stu:hover{background:var(--top)}
+.stat:nth-child(1){border-top:3px solid var(--ok)}
+.stat:nth-child(2),.stat:nth-child(3){border-top:3px solid var(--bad)}
+.stat:nth-child(4){border-top:3px solid var(--blue)}
+.tabs{scroll-snap-type:x proximity}.tabs button{scroll-snap-align:center}
+.hist{border-bottom:1px solid var(--line);border-radius:8px}
+.hist:last-child{border-bottom:0}
+.hist:hover{background:var(--bg)}
+.card .fill{transition:width .5s ease}
+.top{backdrop-filter:blur(8px)}
+</style>
+</head>
+<body>
+<div class="top"><button id="mb" aria-label="Menu" onclick="toggleMenu(event)"><svg width="22" height="22" viewBox="0 0 22 22"><path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button><div id="menu" hidden><button onclick="goHome()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18.5 14a6.5 6.5 0 0 1 3 6"/></svg>Alunos</button><button onclick="goOrg()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Organização</button></div><div id="tt">Desempenho dos Alunos</div><div class="nota" id="tn"></div><small id="ts"></small></div>
+<div class="wrap" id="app"></div>
+<nav id="bn"><button data-k="a" onclick="goHome()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18.5 14a6.5 6.5 0 0 1 3 6"/></svg>Alunos</button><button data-k="o" onclick="goOrg()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Organização</button></nav>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+var KEY="desempenho_v1",SUBJ_KEY="desempenho_subj";
+var S={students:[],subjects:["Matemática","Português","Ciências","História","Geografia","Inglês"]};
+try{var r=localStorage.getItem(KEY);if(r)S=JSON.parse(r)}catch(e){}
+migrate();
+var cur=null,tab=null;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function today(){return new Date().toISOString().slice(0,10)}
+function fmtD(d){var p=d.split("-");return p[2]+"/"+p[1]}
+function data(st,sj,et){et=et||etapa;st.et=st.et||{};var b=st.et[et]=st.et[et]||{};var o=b[sj]=b[sj]||{daily:[],quiz:[]};o.topics=o.topics||[];o.provas=o.provas||[];return o}
+function stats(st,sj,sub,et){var d=data(st,sj,et),a=0,e=0,qt=0,qe=0,qg=0,ok=function(x){return sub==null||(x.sub||"")===sub};
+ d.daily.forEach(function(x){if(ok(x)){a+=x.a;e+=x.e}});d.quiz.forEach(function(x){if(ok(x)){var p=qpts(x);qt+=p.max;qg+=p.got;qe+=p.err}});
+ var ac=a+qg,tot=a+e+qt;
+ return{a:a,e:e,qt:qt,qe:qe,tot:tot,nota:comb(a,e,qg,qt,sub==null?pm(d):null),qpct:qt?(qt-qg)/qt*100:null}}
+function overall(st,et){var s=0,n=0;(et?[et]:ETAPAS).forEach(function(e){S.subjects.forEach(function(sj){var x=stats(st,sj,undefined,e);if(x.nota!=null){s+=x.nota;n++}})});return n?s/n:null}
+var edit=null,flt="todos";
+function comb(a,e,qg,qt,np){var P=S.pesos||{prova:50,quiz:30,dia:20},t=0,w=0;[[a+e?a/(a+e)*10:null,P.dia],[qt?qg/qt*10:null,P.quiz],[np,P.prova]].forEach(function(x){if(x[0]!=null&&x[1]>0){t+=x[0]*x[1];w+=x[1]}});return w?t/w:null}
+function hue(n){var h=0;for(var i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))%360;return h}
+function setNav(k){var b=document.getElementById("bn");if(!b)return;[].forEach.call(b.children,function(x){x.classList.toggle("on",x.dataset.k===k)})}
+function TN(t){return t==="particular"?"Particular":t==="reforco"?"Reforço":"Sem tipo"}
+function cnt(t){return S.students.filter(function(s){return s.tipo===t}).length}
+function fltBar(){return'<div class="tabs" style="margin-bottom:8px">'+[["todos","Todos ("+S.students.length+")"],["reforco","Reforço ("+cnt("reforco")+")"],["particular","Particulares ("+cnt("particular")+")"]].map(function(x){return'<button class="'+(flt===x[0]?"on":"")+'" data-f="'+x[0]+'" onclick="setFlt(this.dataset.f)">'+x[1]+'</button>'}).join("")+'</div>'}
+function setFlt(v){flt=v;list()}
+function tipoSel(st){return'<div class="row" style="margin-bottom:8px"><span class="mut">Tipo de aluno:</span><select id="tp" onchange="setTipo(this.value)" style="flex:1 1 140px">'+[["","Não definido"],["reforco","Reforço"],["particular","Particular"]].map(function(o){return'<option value="'+o[0]+'"'+((st.tipo||"")===o[0]?" selected":"")+'>'+o[1]+'</option>'}).join("")+'</select></div>'}
+function setTipo(v){getSt().tipo=v;save();view()}
+function pesosCard(){var p=S.pesos;return'<div class="card"><h2>Pesos da nota</h2><div class="mut">Cada matéria combina provas, quizzes e questões do dia. Se um deles não tiver registro, os pesos restantes são reajustados.</div><div class="row" style="margin-top:8px"><label class="mut" style="flex:1 1 90px">Provas %<input type="number" min="0" max="100" id="pw1" value="'+p.prova+'" style="width:100%"></label><label class="mut" style="flex:1 1 90px">Quizzes %<input type="number" min="0" max="100" id="pw2" value="'+p.quiz+'" style="width:100%"></label><label class="mut" style="flex:1 1 90px">Dia a dia %<input type="number" min="0" max="100" id="pw3" value="'+p.dia+'" style="width:100%"></label></div><div class="row" style="margin-top:8px"><button onclick="savePesos()">Salvar pesos</button></div><div class="mut" id="pwm" style="margin-top:6px"></div></div>'}
+function savePesos(){var g=function(i){return parseFloat(document.getElementById(i).value)||0},a=g("pw1"),b=g("pw2"),c=g("pw3"),m=document.getElementById("pwm");if(a<0||b<0||c<0||Math.round(a+b+c)!==100){m.textContent="A soma precisa ser 100 (atual: "+(a+b+c)+").";return}S.pesos={prova:a,quiz:b,dia:c};save();list();document.getElementById("pwm").textContent="Pesos salvos."}
+function bkWarn(){if(!S.students.length)return"";var t=S.lastBackup,d=t?Math.floor((Date.now()-t)/864e5):null;if(d!=null&&d<14)return"";return'<div class="card" style="border-color:var(--bad)"><b>Backup pendente</b><div class="mut">'+(d==null?"Você ainda não fez nenhum backup.":"Último backup há "+d+" dias.")+' Se os dados do navegador forem apagados, tudo se perde.</div><button style="margin-top:8px" onclick="backup()">Salvar backup agora</button></div>'}
+async function saveFile(name,data){var dl=null;try{if(window.claude&&window.claude.use)dl=await window.claude.use("downloads")}catch(e){}if(dl){await dl.save({filename:name,data:data});return}var b=data instanceof Blob?data:new Blob([data]),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},1000)}
+function ed(k,id){edit={k:k,id:id};view();var e=document.getElementById("edc");if(e)e.scrollIntoView({behavior:"smooth",block:"center"})}
+function cancelEd(){edit=null;view()}
+function editCard(d){if(!edit)return"";var r=(d[edit.k]||[]).filter(function(x){return x.id===edit.id})[0];if(!r)return"";var h='<div class="card" id="edc" style="border-color:var(--blue-d)"><h2>Editar registro</h2>';
+if(edit.k==="quiz"&&r.ef===undefined)return h+'<div class="mut">Registro antigo, sem divisão por nível: exclua e refaça.</div><div class="row" style="margin-top:8px"><button class="ghost" onclick="cancelEd()">Fechar</button></div></div>';
+h+='<div class="row">';
+if(edit.k==="daily")h+='<input type="date" id="e1" value="'+r.d+'"><input type="number" min="0" id="e2" value="'+r.a+'" placeholder="Acertos"><input type="number" min="0" id="e3" value="'+r.e+'" placeholder="Erros">';
+else if(edit.k==="quiz")h+='<input type="date" id="e1" value="'+r.d+'"><input type="number" min="0" max="6" id="e2" value="'+(6-r.ef)+'" placeholder="Fáceis certas (0-6)"><input type="number" min="0" max="4" id="e3" value="'+(4-r.em)+'" placeholder="Médias certas (0-4)"><input type="number" min="0" max="2" id="e4" value="'+(2-r.ed)+'" placeholder="Difíceis certas (0-2)">';
+else h+='<input id="e1" value="'+esc(r.nome||"")+'" placeholder="Nome"><input type="date" id="e2" value="'+r.d+'"><input type="number" step="0.1" min="0" max="10" id="e3" value="'+r.n+'" placeholder="Nota (0-10)">';
+return h+'</div><div class="row" style="margin-top:8px"><button onclick="saveEd()">Salvar alterações</button><button class="ghost" onclick="cancelEd()">Cancelar</button></div></div>'}
+function saveEd(){var d=data(getSt(),tab),r=d[edit.k].filter(function(x){return x.id===edit.id})[0],v=function(i){return document.getElementById(i).value};if(!r)return cancelEd();
+if(edit.k==="daily"){var a=parseInt(v("e2"))||0,e=parseInt(v("e3"))||0;if(!v("e1")||a+e<1)return;r.d=v("e1");r.a=a;r.e=e}
+else if(edit.k==="quiz"){var f=parseInt(v("e2")),m=parseInt(v("e3")),z=parseInt(v("e4"));if(!v("e1")||isNaN(f)||isNaN(m)||isNaN(z)||f<0||f>6||m<0||m>4||z<0||z>2)return;r.d=v("e1");r.ef=6-f;r.em=4-m;r.ed=2-z}
+else{var n=parseFloat(v("e3"));if(isNaN(n)||n<0||n>10||!v("e2"))return;r.nome=v("e1").trim();r.d=v("e2");r.n=n}
+edit=null;save();view()}
+function provaChart(st){var E=ETAPAS,W=320,H=180,L=30,B=24,T=12,R=12,iw=W-L-R,ph=H-T-B,X=function(i){return L+i*iw/(E.length-1)},Y=function(v){return T+(1-v/10)*ph},cols=["#4f7fae","#d9a441","#4f9a78","#c9675f","#8c6bb1","#e08a3c","#3f9db0","#9a7b4f"],g="",s="",leg="",any=false;
+[0,5,10].forEach(function(v){g+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="var(--line)"/><text x="2" y="'+(Y(v)+4)+'" font-size="10" fill="var(--mut)">'+v+'</text>'});
+E.forEach(function(e,i){g+='<text x="'+X(i)+'" y="'+(H-8)+'" font-size="9" text-anchor="middle" fill="var(--mut)">'+(e==="R"?"Rec.":"E"+e)+'</text>'});
+function ln(vals,c,w,lab){var p="",first=true,dots="";vals.forEach(function(v,i){if(v==null)return;p+=(first?"M":"L")+X(i).toFixed(1)+" "+Y(v).toFixed(1)+" ";first=false;dots+='<circle cx="'+X(i)+'" cy="'+Y(v)+'" r="'+(w>2?4:2.5)+'" fill="'+c+'"/>'+(lab?'<text x="'+X(i)+'" y="'+(Y(v)-8)+'" font-size="9" text-anchor="middle" fill="var(--ink)">'+f(v)+'</text>':'')});return p?'<path d="'+p+'" fill="none" stroke="'+c+'" stroke-width="'+w+'"/>'+dots:""}
+S.subjects.forEach(function(sj,k){var vals=E.map(function(e){return pm(data(st,sj,e))});if(vals.some(function(v){return v!=null})){any=true;s+=ln(vals,cols[k%cols.length],1.5,false);leg+='<span style="color:'+cols[k%cols.length]+'">■</span> '+esc(sj)+' &nbsp;'}});
+if(!any)return'<div class="mut">Nenhuma prova registrada ainda.</div>';
+s+=ln(E.map(function(e){return provaE(st,e)}),"var(--ink)",3,true);
+return'<div class="chart"><svg viewBox="0 0 '+W+' '+H+'" width="100%">'+g+s+'</svg></div><div class="mut"><b>━</b> média geral · '+leg+'</div>'}
+function f(n){return n==null?"—":n.toFixed(1).replace(".",",")}
+function geral(){var s=0,n=0;S.students.forEach(function(st){var o=overall(st);if(o!=null){s+=o;n++}});return n?s/n:null}
+function head(){
+ document.getElementById("tt").textContent="Nota do professor";
+ document.getElementById("tn").textContent=f(geral());
+ document.getElementById("ts").textContent="Baseada em todos os alunos · "+S.students.length+" aluno(s) ("+cnt("reforco")+" reforço · "+cnt("particular")+" particular)"}
+function list(){
+ setNav("a");head(null);var h=bkWarn()+'<div class="card"><h2>Novo aluno</h2><div class="row"><input id="nn" placeholder="Nome do aluno"><select id="nt0"><option value="reforco">Reforço</option><option value="particular">Particular</option></select><button onclick="addSt()">Adicionar</button></div></div><div class="card"><h2>Alunos</h2>'+fltBar();
+ if(!S.students.length)h+='<div class="empty"><b>Nenhum aluno aqui ainda</b><br>Cadastre acima e escolha reforço ou particular.</div>';
+ S.students.filter(function(s){return flt==="todos"||s.tipo===flt}).forEach(function(s){h+='<div class="stu" onclick="openSt(\''+s.id+'\')"><span class="av" style="background:hsl('+hue(s.name)+',45%,48%)">'+esc(s.name.trim().charAt(0).toUpperCase())+'</span><span class="nm">'+esc(s.name)+'<br><span class="tp '+(s.tipo==="particular"?"tp2":s.tipo?"tp1":"tp3")+'">'+TN(s.tipo)+'</span></span><span class="pill '+gc(overall(s))+'">'+f(overall(s))+'</span></div>'});
+ document.getElementById("app").innerHTML=h+'</div>'+pesosCard()+'<div class="card"><h2>Backup dos dados</h2><div class="row"><button onclick="backup()">Salvar backup</button><button class="ghost" onclick="document.getElementById(\'rf\').click()">Restaurar</button><input type="file" id="rf" accept=".json,application/json" style="display:none" onchange="restore(this)"></div><div class="mut" id="bm" style="margin-top:6px"></div></div>'}
+function addSt(){var n=document.getElementById("nn").value.trim();if(!n)return;S.students.push({id:"s"+Date.now(),name:n,s:{},tipo:document.getElementById("nt0").value});save();list()}
+function openSt(id){fresh=true;edit=null;cur=id;tab=S.subjects[0];mode="mat";etapa="1";view()}
+function getSt(){return S.students.filter(function(s){return s.id===cur})[0]}
+function chart(d){
+ var by={};d.daily.forEach(function(x){by[x.d]=by[x.d]||[0,0];by[x.d][0]+=x.a;by[x.d][1]+=x.e});
+ var ks=Object.keys(by).sort();
+ if(ks.length<2)return'<div class="mut">Registre pelo menos 2 dias para ver a variação.</div>';
+ var W=320,H=170,L=30,B=24,T=10,R=10,pts=ks.map(function(k,i){var p=by[k][0]/(by[k][0]+by[k][1])*100;return[L+i*(W-L-R)/(ks.length-1),T+(100-p)/100*(H-T-B),p,k]});
+ var g="";[0,50,100].forEach(function(v){var y=T+(100-v)/100*(H-T-B);g+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y+'" y2="'+y+'" stroke="var(--line)"/><text x="2" y="'+(y+4)+'" font-size="10" fill="var(--mut)">'+v+'%</text>'});
+ var path=pts.map(function(p,i){return(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)}).join(" ");
+ var dots=pts.map(function(p){return'<circle cx="'+p[0]+'" cy="'+p[1]+'" r="4" fill="var(--blue-d)"/><text x="'+p[0]+'" y="'+(H-8)+'" font-size="9" text-anchor="middle" fill="var(--mut)">'+fmtD(p[3])+'</text>'}).join("");
+ return'<div class="chart"><svg viewBox="0 0 '+W+' '+H+'" width="100%">'+g+'<path d="'+path+'" fill="none" stroke="var(--blue-d)" stroke-width="2.5"/>'+dots+'</svg></div><div class="mut">% de acertos por dia</div>'}
+function view(){
+ armed=false;var st=getSt();head(st);if(mode==="quiz"){document.getElementById("app").innerHTML=quizView(st);return}if(mode==="rel"){document.getElementById("app").innerHTML=relView(st);return}var d=data(st,tab),x=stats(st,tab);
+ var h='<div class="row"><button class="ghost" onclick="list()">← Alunos</button><button class="x" id="dbtn" onclick="delSt()">Excluir aluno</button></div>';
+ h+=modeBar()+geralCard(st)+provasEtapa(st);h+='<div class="card"><div class="tabs">'+S.subjects.map(function(s){return'<button class="'+(s===tab?"on":"")+'" onclick="setTab(this.dataset.s)" data-s="'+esc(s)+'">'+esc(s)+'</button>'}).join("")+'</div><div class="row" style="margin-top:8px"><input id="ns" placeholder="Nova matéria"><button class="ghost" onclick="addSj()">+</button></div></div>';
+ h+='<div class="card"><h2>'+esc(tab)+' · nota do aluno: <span class="ok">'+f(x.nota)+'</span></h2><div class="grid"><div class="stat"><b class="ok">'+x.a+'</b><span>acertos (dia a dia)</span></div><div class="stat"><b class="bad">'+x.e+'</b><span>erros (dia a dia)</span></div><div class="stat"><b class="bad">'+x.qe+'</b><span>erros nos quizzes</span></div><div class="stat"><b>'+(x.qpct==null?"—":x.qpct.toFixed(0)+"%")+'</b><span>% de pontos perdidos nos quizzes</span></div></div><div class="mut" style="margin-top:8px">Nota geral de '+esc(st.name)+' nesta etapa (todas as matérias): '+f(overall(st,etapa))+'</div></div>';
+ h+=subCard(st,d);h+=editCard(d);h+='<div class="card"><h2>Questões do dia</h2><div class="row"><input type="date" id="dd" value="'+today()+'"><input type="number" min="0" id="da" placeholder="Acertos"><input type="number" min="0" id="de" placeholder="Erros"><button onclick="addD()">Salvar</button></div>';
+ h+=d.daily.slice().sort(function(a,b){return b.d>a.d?1:-1}).map(function(r){var p=r.a+r.e?Math.round(r.a/(r.a+r.e)*100):0;return'<div class="hist"><span>'+fmtD(r.d)+' · '+(r.sub?esc(r.sub)+' · ':'')+'<span class="ok">'+r.a+' certas</span> <span class="bad">'+r.e+' erradas</span> · '+p+'%</span><button class="x ed" style="color:var(--blue-d)" onclick="ed(\'daily\',\''+r.id+'\')">✎</button><button class="x" onclick="del(\'daily\',\''+r.id+'\')">×</button></div>'}).join("")+'</div>';
+ h+='<div class="card"><h2>Quiz</h2><div class="mut">Informe as questões ACERTADAS (12 no total: 6 fáceis · 4 médias · 2 difíceis; pesos 1, 2 e 3)</div><div class="row" style="margin-top:6px"><input type="date" id="qd" value="'+today()+'"><input type="number" min="0" max="6" id="qf" placeholder="Fáceis certas (0-6)"><input type="number" min="0" max="4" id="qm" placeholder="Médias certas (0-4)"><input type="number" min="0" max="2" id="qh" placeholder="Difíceis certas (0-2)"><button onclick="addQ()">Salvar</button></div>';
+ h+=d.quiz.slice().sort(function(a,b){return b.d>a.d?1:-1}).map(function(r){return'<div class="hist"><span>'+fmtD(r.d)+' · '+(r.sub?esc(r.sub)+' · ':'')+''+(r.ef===undefined?'<span class="bad">'+r.e+' erros</span> de '+r.t:'<span class="bad">F'+r.ef+' M'+r.em+' D'+r.ed+'</span> · '+qpts(r).got+'/20 pts')+'</span><button class="x ed" style="color:var(--blue-d)" onclick="ed(\'quiz\',\''+r.id+'\')">✎</button><button class="x" onclick="del(\'quiz\',\''+r.id+'\')">×</button></div>'}).join("")+'</div>';
+ h+=provasCard(d);h+='<div class="card"><h2>Variação em '+esc(tab)+'</h2>'+chart(d)+'</div>';h+=breakCard(st);
+ document.getElementById("app").innerHTML=h}
+function setTab(s){edit=null;tab=s;view()}
+function addSj(){var n=document.getElementById("ns").value.trim();if(!n||S.subjects.indexOf(n)>-1)return;S.subjects.push(n);tab=n;save();view()}
+function addD(){var a=parseInt(document.getElementById("da").value)||0,e=parseInt(document.getElementById("de").value)||0,dt=document.getElementById("dd").value;if(!dt||a+e<1)return;data(getSt(),tab).daily.push({id:"d"+Date.now(),d:dt,a:a,e:e,sub:data(getSt(),tab).cur||""});save();view()}
+function addQ(){var v=function(i){return document.getElementById(i).value},fa=v("qf"),ma=v("qm"),da=v("qh"),dt=v("qd");if(!dt||fa===""||ma===""||da==="")return;fa=+fa;ma=+ma;da=+da;if(fa<0||fa>6||ma<0||ma>4||da<0||da>2)return;data(getSt(),tab).quiz.push({id:"q"+Date.now(),d:dt,ef:6-fa,em:4-ma,ed:2-da,sub:data(getSt(),tab).cur||""});save();view()}
+function del(k,id){var d=data(getSt(),tab);d[k]=d[k].filter(function(r){return r.id!==id});save();view()}
+function gc(n){return n==null?"":n>=7?"g":n>=5?"y":"r"}
+function bar(label,val,extra){var p=val==null?0:val*10;return'<div style="margin:8px 0"><div style="display:flex;justify-content:space-between;font-size:14px;gap:8px"><span>'+esc(label)+'</span><b>'+f(val)+(extra||'')+'</b></div><div style="background:var(--bg);border-radius:8px;height:10px"><div class="fill" style="width:'+p+'%;height:10px;border-radius:8px;background:'+(val==null?'var(--line)':val>=7?'var(--ok)':val>=5?'#d9a441':'var(--bad)')+'"></div></div></div>'}
+function geralCard(st){var h='<div class="card"><h2>Avaliação de '+esc(st.name)+' · '+ENAME[etapa]+' · nota geral '+f(overall(st,etapa))+'</h2>'+tipoSel(st)+'<div class="mut">Nota por matéria</div>';S.subjects.forEach(function(sj){h+=bar(sj,stats(st,sj).nota)});var all={daily:[]};S.subjects.forEach(function(sj){all.daily=all.daily.concat(data(st,sj).daily)});return h+'<div class="mut" style="margin-top:10px">Evolução geral (todas as matérias)</div>'+chart(all)+'</div>'}
+function subCard(st,d){var o='<option value="">(sem submatéria)</option>'+d.topics.map(function(t){return'<option'+(t===d.cur?' selected':'')+' value="'+esc(t)+'">'+esc(t)+'</option>'}).join("");return'<div class="card"><h2>Submatéria em estudo</h2><div class="row"><select id="sel" onchange="setSub(this.value)">'+o+'</select></div><div class="row" style="margin-top:8px"><input id="nt" placeholder="Nova submatéria (ex: Frações)"><button class="ghost" onclick="addTopic()">+</button></div><div class="mut" style="margin-top:6px">Os registros abaixo são marcados com a submatéria selecionada.</div></div>'}
+function setSub(v){data(getSt(),tab).cur=v;save();view()}
+function addTopic(){var n=document.getElementById("nt").value.trim(),d=data(getSt(),tab);if(!n)return;if(d.topics.indexOf(n)<0)d.topics.push(n);d.cur=n;save();view()}
+function breakCard(st){var d=data(st,tab),names=d.topics.slice();if(d.daily.concat(d.quiz).some(function(r){return !r.sub}))names.push("");if(!names.length)return'';var h='<div class="card"><h2>Nota por submatéria em '+esc(tab)+'</h2>';names.forEach(function(n){var x=stats(st,tab,n);h+=bar(n||"Sem submatéria",x.nota)});return h+'</div>'}
+function qpts(r){if(r.ef===undefined)return{max:r.t,got:r.t-r.e,err:r.e};var w=r.ef+r.em*2+r.ed*3;return{max:20,got:20-w,err:r.ef+r.em+r.ed}}
+function setMode(m){mode=m;view()}
+function delQ(sj,id){var d=data(getSt(),sj);d.quiz=d.quiz.filter(function(r){return r.id!==id});save();view()}
+function modeBar(){return etapaBar()+(mode==="rel"?"":modeBar2())}
+function modeBar2(){return'<div class="tabs" style="margin:10px 0"><button class="'+(mode==="mat"?"on":"")+'" data-m="mat" onclick="setMode(this.dataset.m)">Matérias</button><button class="'+(mode==="quiz"?"on":"")+'" data-m="quiz" onclick="setMode(this.dataset.m)">Histórico de quizzes</button></div>'}
+function quizCharts(rows){var r=rows.slice().reverse();if(r.length<2)return'<div class="card"><h2>Gráficos</h2><div class="mut">Registre pelo menos 2 quizzes para ver os gráficos.</div></div>';
+var W=320,H=170,L=30,B=24,T=14,R=10,iw=W-L-R,ph=H-T-B,n=r.length,g="";
+[0,50,100].forEach(function(v){var y=T+(1-v/100)*ph;g+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y+'" y2="'+y+'" stroke="var(--line)"/><text x="2" y="'+(y+4)+'" font-size="10" fill="var(--mut)">'+v+'%</text>'});
+var pts=r.map(function(o,i){var p=qpts(o.r);return{x:L+i*iw/(n-1),y:T+(1-p.got/p.max)*ph,got:p.got,d:o.r.d}});
+var path=pts.map(function(p,i){return(i?"L":"M")+p.x.toFixed(1)+" "+p.y.toFixed(1)}).join(" ");
+var dots=pts.map(function(p){return'<circle cx="'+p.x+'" cy="'+p.y+'" r="4" fill="var(--blue-d)"/><text x="'+p.x+'" y="'+(p.y-7)+'" font-size="9" text-anchor="middle" fill="var(--ink)">'+p.got+'</text><text x="'+p.x+'" y="'+(H-8)+'" font-size="9" text-anchor="middle" fill="var(--mut)">'+fmtD(p.d)+'</text>'}).join("");
+var c1='<svg viewBox="0 0 '+W+' '+H+'" width="100%">'+g+'<path d="'+path+'" fill="none" stroke="var(--blue-d)" stroke-width="2.5"/>'+dots+'</svg>';
+var b=r.filter(function(o){return o.r.ef!==undefined}),c2='';
+if(b.length){var tot=[0,0,0];b.forEach(function(o){tot[0]+=o.r.ef;tot[1]+=o.r.em;tot[2]+=o.r.ed});var cap=[6*b.length,4*b.length,2*b.length],nm=["Fáceis","Médias","Difíceis"],cl=["var(--blue)","#d9a441","var(--bad)"],rt=tot.map(function(v,i){return v/cap[i]*100}),mi=0;rt.forEach(function(v,i){if(v>rt[mi]||(v===rt[mi]&&tot[i]*(i+1)>tot[mi]*(mi+1)))mi=i});
+var need=rt[mi]===0?'<div style="margin-top:10px;padding:12px;border-radius:12px;border:2px solid var(--ok);background:var(--bg)"><b>Nenhum erro registrado</b><div class="mut">Sem nível com necessidade específica por enquanto.</div></div>':'<div style="margin-top:10px;padding:12px;border-radius:12px;border:2px solid '+cl[mi]+';background:var(--bg)"><div class="mut">Maior necessidade de reforço</div><div style="font-size:22px;font-weight:700">'+nm[mi]+'</div><div class="mut">Erra '+rt[mi].toFixed(0)+'% das questões desse nível ('+tot[mi]+' de '+cap[mi]+')</div></div>';
+var rows=nm.map(function(n,i){return'<div style="margin:8px 0"><div style="display:flex;justify-content:space-between;font-size:14px;gap:8px"><span>'+(i===mi&&rt[mi]>0?IC.warn+' ':'')+n+'</span><b>'+rt[i].toFixed(0)+'% de erro · '+tot[i]+'/'+cap[i]+'</b></div><div style="background:var(--bg);border-radius:8px;height:10px"><div style="width:'+rt[i]+'%;height:10px;border-radius:8px;background:'+cl[i]+'"></div></div></div>'}).join("");
+var bw=Math.min(28,iw/b.length*0.6),sc=ph/12,bs='';b.forEach(function(o,i){var x=L+(i+0.5)*iw/b.length-bw/2,y=T+ph,segs=[[o.r.ef,"var(--blue)"],[o.r.em,"#d9a441"],[o.r.ed,"var(--bad)"]];segs.forEach(function(s){var hh=s[0]*sc;y-=hh;if(hh>0)bs+='<rect x="'+x+'" y="'+y+'" width="'+bw+'" height="'+hh+'" fill="'+s[1]+'"/>'});bs+='<text x="'+(x+bw/2)+'" y="'+(H-8)+'" font-size="9" text-anchor="middle" fill="var(--mut)">'+fmtD(o.r.d)+'</text>'});
+c2='<svg viewBox="0 0 '+W+' '+H+'" width="100%"><line x1="'+L+'" x2="'+(W-R)+'" y1="'+(T+ph)+'" y2="'+(T+ph)+'" stroke="var(--line)"/>'+bs+'</svg><div class="mut"><span style="color:var(--blue-d)">■</span> fáceis &nbsp;<span style="color:#d9a441">■</span> médias &nbsp;<span style="color:var(--bad)">■</span> difíceis (questões erradas)</div>'+need+rows}
+return'<div class="card"><h2>Pontuação por quiz</h2><div class="chart">'+c1+'</div><div class="mut">Eixo em % dos pontos · número no ponto = pontos (máx. 20)</div></div>'+(c2?'<div class="card"><h2>Erros por nível de dificuldade</h2><div class="chart">'+c2+'</div></div>':'')}
+function quizView(st){var rows=[];S.subjects.forEach(function(sj){data(st,sj).quiz.forEach(function(r){rows.push({sj:sj,r:r})})});rows.sort(function(a,b){return a.r.d<b.r.d?1:-1});var G=0,M=0,ef=0,em=0,ed=0;rows.forEach(function(o){var p=qpts(o.r);G+=p.got;M+=p.max;if(o.r.ef!==undefined){ef+=o.r.ef;em+=o.r.em;ed+=o.r.ed}});
+var h='<div class="row"><button class="ghost" onclick="list()">← Alunos</button><button class="x" id="dbtn" onclick="delSt()">Excluir aluno</button></div>'+modeBar()+'<div class="card"><h2>Pontos em quizzes · '+esc(st.name)+' · '+ENAME[etapa]+'</h2><div class="grid"><div class="stat"><b class="ok">'+G+'/'+M+'</b><span>pontos acumulados</span></div><div class="stat"><b>'+rows.length+'</b><span>quizzes feitos</span></div></div><div class="mut" style="margin-top:8px">Total de erros: fáceis '+ef+' · médias '+em+' · difíceis '+ed+'</div></div>'+quizCharts(rows)+'<div class="card"><h2>Histórico por quiz</h2>';
+if(!rows.length)h+='<div class="mut">Nenhum quiz registrado. Registre dentro de uma matéria.</div>';
+rows.forEach(function(o){var r=o.r,p=qpts(r);h+='<div class="hist" style="align-items:flex-start"><div>'+fmtD(r.d)+' · '+esc(o.sj)+(r.sub?' · '+esc(r.sub):'')+'<br><span class="mut">'+(r.ef===undefined?'Registro antigo: '+r.e+' erros de '+r.t:'Erradas — fáceis: '+r.ef+'/6 · médias: '+r.em+'/4 · difíceis: '+r.ed+'/2')+'</span><br><b class="ok">'+p.got+'/'+p.max+' pontos</b></div><button class="x" data-s="'+esc(o.sj)+'" data-i="'+r.id+'" onclick="delQ(this.dataset.s,this.dataset.i)">×</button></div>'});
+return h+'</div>'}
+function migrate(){S.org=S.org||{anos:[]};S.pesos=S.pesos||{prova:50,quiz:30,dia:20};S.students.forEach(function(st){if(st.s&&!st.et)st.et={"1":st.s};delete st.s;st.et=st.et||{}})}
+var NIV=["Fáceis","Médias","Difíceis"];
+function etapaBar(){return'<div class="tabs">'+ETAPAS.map(function(e){return'<button class="'+(mode!=="rel"&&etapa===e?"on":"")+'" data-e="'+e+'" onclick="setEtapa(this.dataset.e)">'+ENAME[e]+'</button>'}).join("")+'<button class="'+(mode==="rel"?"on":"")+'" data-e="rel" onclick="setEtapa(this.dataset.e)">Relatório final</button></div>'}
+function setEtapa(e){if(e==="rel")mode="rel";else{etapa=e;if(mode==="rel")mode="mat"}view()}
+function backRow(){return'<div class="row"><button class="ghost" onclick="list()">← Alunos</button><button class="x" id="dbtn" onclick="delSt()">Excluir aluno</button></div>'}
+function needOf(tot,nl){var cap=[6*nl,4*nl,2*nl],rt=tot.map(function(v,i){return cap[i]?v/cap[i]*100:0}),mi=0;rt.forEach(function(v,i){if(v>rt[mi]||(v===rt[mi]&&tot[i]*(i+1)>tot[mi]*(mi+1)))mi=i});return{cap:cap,rt:rt,mi:mi}}
+function relData(st){var R={nota:overall(st),et:[],sj:[],tot:[0,0,0],nl:0,nq:0,qg:0,qm:0};
+ETAPAS.forEach(function(e){var g=0,m=0,n=0;S.subjects.forEach(function(sj){data(st,sj,e).quiz.forEach(function(r){var p=qpts(r);g+=p.got;m+=p.max;n++;if(r.ef!==undefined){R.tot[0]+=r.ef;R.tot[1]+=r.em;R.tot[2]+=r.ed;R.nl++}})});R.et.push({k:e,nota:overall(st,e),qg:g,qm:m,nq:n,prova:provaE(st,e)});R.nq+=n;R.qg+=g;R.qm+=m});
+S.subjects.forEach(function(sj){var s0=0,n0=0;ETAPAS.forEach(function(e){var x=stats(st,sj,undefined,e);if(x.nota!=null){s0+=x.nota;n0++}});R.sj.push({n:sj,nota:n0?s0/n0:null})});return R}
+function attn(R,nd){var t=[],s=R.sj.filter(function(x){return x.nota!=null}).sort(function(a,b){return a.nota-b.nota});
+if(s.length){t.push("Matéria com menor nota: "+s[0].n+" ("+f(s[0].nota)+")");if(s.length>1)t.push("Matéria com maior nota: "+s[s.length-1].n+" ("+f(s[s.length-1].nota)+")")}else t.push("Ainda não há notas registradas.");
+if(!R.nl)t.push("Sem quizzes com divisão por dificuldade.");else if(nd.rt[nd.mi]===0)t.push("Nenhum erro nos quizzes.");else t.push("Nível de dificuldade com maior necessidade: "+NIV[nd.mi]+" ("+nd.rt[nd.mi].toFixed(0)+"% de erro)");
+var e=R.et.filter(function(x){return x.nota!=null});if(e.length>1){var a=e[e.length-2].nota,b=e[e.length-1].nota;t.push("Variação entre as duas últimas etapas com registro: "+(b-a>=0?"+":"")+(b-a).toFixed(1).replace(".",",")+" ponto(s)")}return t}
+function relView(st){var R=relData(st),nd=needOf(R.tot,R.nl),all={daily:[]};ETAPAS.forEach(function(e){S.subjects.forEach(function(sj){all.daily=all.daily.concat(data(st,sj,e).daily)})});
+var h=backRow()+modeBar()+'<div class="card"><h2>Relatório final · '+esc(st.name)+' · '+TN(st.tipo)+'</h2><div class="grid"><div class="stat"><b class="ok">'+f(R.nota)+'</b><span>nota final do professor</span></div><div class="stat"><b>'+R.qg+'/'+R.qm+'</b><span>pontos em quizzes ('+R.nq+')</span></div></div></div>';
+h+='<div class="card"><h2>Nota por etapa</h2>'+R.et.map(function(e){return bar(ENAME[e.k],e.nota)}).join("")+'</div>';
+h+='<div class="card"><h2>Média das provas por etapa</h2>'+R.et.map(function(e){return bar(ENAME[e.k],e.prova)}).join("")+'</div>';h+='<div class="card"><h2>Provas ao longo das etapas</h2>'+provaChart(st)+'</div>';h+='<div class="card"><h2>Nota por matéria (todas as etapas)</h2>'+R.sj.map(function(s){return bar(s.n,s.nota)}).join("")+'</div>';
+h+='<div class="card"><h2>Evolução geral</h2>'+chart(all)+'</div>';
+h+='<div class="card"><h2>Pontos de atenção</h2>'+attn(R,nd).map(function(t){return'<div style="margin:6px 0">• '+esc(t)+'</div>'}).join("")+'</div>';
+h+='<div class="card"><button onclick="pdf()">Baixar relatório em PDF</button><div class="mut" id="pm" style="margin-top:6px"></div></div>';return h}
+async function pdf(){var m=document.getElementById("pm"),st=getSt();try{if(!window.jspdf){m.textContent="A biblioteca de PDF não carregou.";return}var R=relData(st),nd=needOf(R.tot,R.nl),D=new window.jspdf.jsPDF({unit:"mm",format:"a4"}),y=20;
+function line(t,sz,b){D.setFontSize(sz||11);D.setFont("helvetica",b?"bold":"normal");D.splitTextToSize(t,170).forEach(function(l){if(y>280){D.addPage();y=20}D.text(l,20,y);y+=(sz||11)*0.5+2})}
+function pbar(l,v){if(y>270){D.addPage();y=20}D.setFontSize(10);D.setFont("helvetica","normal");D.text(l,20,y);D.text(v==null?"-":v.toFixed(1).replace(".",","),190,y,{align:"right"});y+=2.5;D.setFillColor(230,220,195);D.rect(20,y,170,3,"F");if(v!=null){D.setFillColor(127,168,209);D.rect(20,y,170*v/10,3,"F")}y+=8}
+line("Relatório final de desempenho",18,true);line("Aluno: "+st.name,12);line("Tipo: "+TN(st.tipo),10);line("Emitido em "+new Date().toLocaleDateString("pt-BR"),10);y+=4;
+line("Nota final do professor: "+f(R.nota)+" / 10",14,true);line("Pontos em quizzes: "+R.qg+" de "+R.qm+" ("+R.nq+" quizzes)",11);y+=4;
+line("Nota por etapa",13,true);y+=1;R.et.forEach(function(e){pbar(ENAME[e.k],e.nota)});
+line("Média das provas por etapa",13,true);y+=1;R.et.forEach(function(e){pbar(ENAME[e.k],e.prova)});line("Nota por matéria (todas as etapas)",13,true);y+=1;R.sj.forEach(function(s){pbar(s.n,s.nota)});
+y+=2;line("Pontos de atenção",13,true);attn(R,nd).forEach(function(t){line("- "+t,11)});
+if(R.nl){line("Erros por nível (todos os quizzes): fáceis "+R.tot[0]+"/"+nd.cap[0]+", médias "+R.tot[1]+"/"+nd.cap[1]+", difíceis "+R.tot[2]+"/"+nd.cap[2],10)}
+y+=4;line("Detalhe por etapa",13,true);
+ETAPAS.forEach(function(e){if(overall(st,e)==null)return;y+=2;line(ENAME[e]+" - nota "+f(overall(st,e)),12,true);S.subjects.forEach(function(sj){var x=stats(st,sj,undefined,e);if(x.nota==null)return;line("  "+sj+": nota "+f(x.nota)+" | questões do dia: "+x.a+" certas, "+x.e+" erradas | quizzes: "+(x.qpct==null?"-":x.qpct.toFixed(0)+"% de pontos perdidos"),10)})});
+var buf=D.output("arraybuffer");await saveFile("relatorio-"+st.name.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^\w]+/g,"-")+".pdf",buf);m.textContent="PDF salvo."}catch(e){m.textContent=(e&&e.code==="declined")?"Download cancelado.":"Não foi possível gerar o PDF."}}
+function toggleMenu(ev){ev.stopPropagation();var m=document.getElementById("menu");m.hidden=!m.hidden}
+document.addEventListener("click",function(){var m=document.getElementById("menu");if(m)m.hidden=true});
+function goHome(){fresh=true;list()}
+function goOrg(){fresh=true;orgPath=[];oarm=null;orgView()}
+function uid(){return"o"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function idb(){return new Promise(function(res,rej){var r=indexedDB.open("desempenho_files",1);r.onupgradeneeded=function(){r.result.createObjectStore("f")};r.onsuccess=function(){res(r.result)};r.onerror=function(){rej(r.error)}})}
+function fx(md,fn){return idb().then(function(db){return new Promise(function(res,rej){var t=db.transaction("f",md),q=fn(t.objectStore("f"));t.oncomplete=function(){res(q.result)};t.onerror=function(){rej(t.error)};t.onabort=function(){rej(t.error)}})})}
+function fput(id,b){return fx("readwrite",function(s){return s.put(b,id)})}
+function fget(id){return fx("readonly",function(s){return s.get(id)})}
+function fdel(id){return fx("readwrite",function(s){return s.delete(id)})}
+function orgNodes(){var a=S.org.anos.find(function(x){return x.id===orgPath[0]}),m=a&&a.m.find(function(x){return x.id===orgPath[1]}),s=m&&m.s.find(function(x){return x.id===orgPath[2]});return{a:a,m:m,s:s}}
+function fids(x){var r=(x.files||[]).map(function(f){return f.id});(x.m||[]).concat(x.s||[]).forEach(function(y){r=r.concat(fids(y))});return r}
+function fsize(n){return n>=1048576?(n/1048576).toFixed(1)+" MB":Math.max(1,Math.round(n/1024))+" KB"}
+var TIPOS=["Aulas (PDF)","Slides","Questões"];
+function orgTo(i){orgPath=orgPath.slice(0,i);oarm=null;orgView()}
+function orgOpen(id){orgPath.push(id);oarm=null;orgView()}
+function orgAdd(){var n=orgNodes(),L=orgPath.length,v=document.getElementById("on").value.trim();if(!v)return;if(L===0)S.org.anos.push({id:uid(),name:v,m:[]});else if(L===1)n.a.m.push({id:uid(),name:v,s:[]});else n.m.s.push({id:uid(),name:v,files:[]});save();orgView()}
+function orgDel(id){var n=orgNodes(),L=orgPath.length;if(oarm!==id){oarm=id;orgView();return}oarm=null;var arr=L===0?S.org.anos:L===1?n.a.m:n.m.s,i=arr.findIndex(function(x){return x.id===id});if(i<0)return;fids(arr[i]).forEach(function(f){fdel(f).catch(function(){})});arr.splice(i,1);save();orgView()}
+async function orgUpload(inp){var m=document.getElementById("om"),n=orgNodes(),tp=document.getElementById("otp").value,fl=Array.prototype.slice.call(inp.files);if(!fl.length)return;m.textContent="Salvando...";try{for(var i=0;i<fl.length;i++){var id=uid();await fput(id,fl[i]);n.s.files.push({id:id,name:fl[i].name,tipo:tp,size:fl[i].size})}save();orgView()}catch(e){m.textContent="Não foi possível salvar o arquivo neste aparelho."}}
+async function orgGet(id){var m=document.getElementById("om"),f=orgNodes().s.files.find(function(x){return x.id===id});try{var b=await fget(id);if(!b){m.textContent="Arquivo não encontrado neste aparelho.";return}await saveFile(f.name,b);m.textContent="Arquivo salvo."}catch(e){m.textContent=(e&&e.code==="declined")?"Download cancelado.":(e&&e.code==="rejected_extension")?"Este tipo de arquivo não pode ser baixado aqui.":"Não foi possível baixar o arquivo."}}
+async function orgFdel(id){var s=orgNodes().s;try{await fdel(id)}catch(e){}s.files=s.files.filter(function(x){return x.id!==id});save();orgView()}
+function orgView(){setNav("o");head();var n=orgNodes(),L=orgPath.length;if((L>0&&!n.a)||(L>1&&!n.m)||(L>2&&!n.s)){orgPath=[];L=0}
+var names=["Organização"];if(n.a)names.push(n.a.name);if(n.m)names.push(n.m.name);if(n.s)names.push(n.s.name);
+var h='<div class="row"><button class="ghost" onclick="goHome()">← Alunos</button></div><div class="tabs" style="margin-top:10px">'+names.map(function(t,i){return'<button class="'+(i===L?"on":"")+'" data-i="'+i+'" onclick="orgTo(+this.dataset.i)">'+esc(t)+'</button>'}).join("")+'</div>';
+if(L<3){var T=["Anos ensinados","Matérias","Submatérias"],P=["Novo ano (ex: 6º ano)","Nova matéria (ex: Matemática)","Nova submatéria (ex: Frações)"],arr=L===0?S.org.anos:L===1?n.a.m:n.m.s;
+h+='<div class="card"><h2>'+IC.folder+' '+T[L]+'</h2><div class="row"><input id="on" placeholder="'+P[L]+'"><button onclick="orgAdd()">Adicionar</button></div><div class="mut" style="margin-top:8px">Para enviar PDFs, slides e questões: abra um ano, depois uma matéria e toque em uma submatéria.</div></div><div class="card">';
+if(!arr.length)h+='<div class="mut">Nenhuma pasta ainda.</div>';
+arr.forEach(function(x){var c=L===0?x.m.length+" mat.":L===1?x.s.length+" sub.":x.files.length+" arq.";h+='<div class="stu" data-i="'+x.id+'" onclick="orgOpen(this.dataset.i)"><span class="av">'+IC.folder+'</span><span class="nm">'+esc(x.name)+'</span><span class="mut">'+c+'</span><button class="x" data-i="'+x.id+'" onclick="event.stopPropagation();orgDel(this.dataset.i)">'+(oarm===x.id?"Confirmar":"×")+'</button></div>'});
+return document.getElementById("app").innerHTML=h+'</div>'}
+h+='<div class="card"><h2>Enviar arquivos</h2><div class="row"><select id="otp">'+TIPOS.map(function(t){return'<option>'+t+'</option>'}).join("")+'</select></div><div class="row" style="margin-top:8px"><label class="upl" for="fi">'+IC.clip+' Escolher arquivos no aparelho</label><input type="file" id="fi" multiple accept=".pdf,.ppt,.pptx,.doc,.docx,image/*" onchange="orgUpload(this)" style="display:none"></div><div class="mut" id="om" style="margin-top:6px">Os arquivos ficam salvos neste aparelho e não entram no backup dos dados.</div></div>';
+TIPOS.forEach(function(t){var fs=n.s.files.filter(function(f){return f.tipo===t});h+='<div class="card"><h2>'+t+'</h2>'+(fs.length?fs.map(function(f){return'<div class="hist"><span>'+esc(f.name)+'<br><span class="mut">'+fsize(f.size)+'</span></span><span><button class="ghost" data-i="'+f.id+'" onclick="orgGet(this.dataset.i)">Baixar</button><button class="x" data-i="'+f.id+'" onclick="orgFdel(this.dataset.i)">×</button></span></div>'}).join(""):'<div class="mut">Nenhum arquivo.</div>')+'</div>'});
+document.getElementById("app").innerHTML=h}
+function svg(p){return'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>'}
+var IC={folder:svg('<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>'),clip:svg('<path d="M21 11l-8.5 8.5a5 5 0 0 1-7-7L14 4a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3L15 7"/>'),warn:svg('<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/>')};
+function pm(d){var s=0,n=0;d.provas.forEach(function(p){s+=p.n;n++});return n?s/n:null}
+function provaE(st,et){var s=0,n=0;S.subjects.forEach(function(sj){var x=pm(data(st,sj,et));if(x!=null){s+=x;n++}});return n?s/n:null}
+function provasEtapa(st){var rows="",pe=provaE(st,etapa);S.subjects.forEach(function(sj){var d=data(st,sj,etapa),m=pm(d);if(m!=null)rows+=bar(sj,m,' · '+d.provas.length+' prova(s)')});return'<div class="card"><h2>Provas · '+ENAME[etapa]+(pe!=null?' · média '+f(pe):'')+'</h2>'+(rows||'<div class="mut">Nenhuma prova nesta etapa. Registre dentro de cada matéria.</div>')+'</div>'}
+function provasCard(d){return'<div class="card"><h2>Provas de '+esc(tab)+(pm(d)!=null?' · média '+f(pm(d)):'')+'</h2><div class="row"><input id="pn" placeholder="Nome (ex: Prova 1)"><input type="date" id="pd" value="'+today()+'"><input type="number" step="0.1" min="0" max="10" id="pv" placeholder="Nota (0-10)"><button onclick="addP()">Salvar</button></div>'+d.provas.slice().sort(function(a,b){return b.d>a.d?1:-1}).map(function(p){return'<div class="hist"><span>'+fmtD(p.d)+' · '+esc(p.nome||"Prova")+' · <b>'+f(p.n)+'</b></span><button class="x ed" style="color:var(--blue-d)" data-i="'+p.id+'" onclick="ed(\'provas\',this.dataset.i)">✎</button><button class="x" data-i="'+p.id+'" onclick="delP(this.dataset.i)">×</button></div>'}).join("")+'</div>'}
+function addP(){var v=parseFloat(document.getElementById("pv").value),dt=document.getElementById("pd").value;if(isNaN(v)||v<0||v>10||!dt)return;data(getSt(),tab).provas.push({id:"p"+Date.now(),d:dt,n:v,nome:document.getElementById("pn").value.trim()});save();view()}
+function delP(id){var d=data(getSt(),tab);d.provas=d.provas.filter(function(p){return p.id!==id});save();view()}
+var app=document.getElementById("app"),fresh=false;
+new MutationObserver(function(){var go=fresh;fresh=false;app.classList.toggle("go",go);if(go)[].forEach.call(app.children,function(el,i){el.style.animationDelay=Math.min(i,8)*50+"ms"});[].forEach.call(app.querySelectorAll(".chart path"),function(p){p.setAttribute("pathLength","1")});[].forEach.call(app.querySelectorAll(".tabs"),function(t){var on=t.querySelector("button.on");if(on)t.scrollTo({left:on.offsetLeft-t.clientWidth/2+on.clientWidth/2,behavior:go?"smooth":"auto"})})}).observe(app,{childList:true});
+var orgPath=[],oarm=null;
+var armed=false,mode="mat",etapa="1",ETAPAS=["1","2","3","4","R"],ENAME={"1":"Etapa 1","2":"Etapa 2","3":"Etapa 3","4":"Etapa 4","R":"Recuperação"};
+function delSt(){var b=document.getElementById("dbtn");if(!armed){armed=true;b.textContent="Toque de novo para confirmar";b.style.background="var(--bad)";b.style.color="#fff";return}armed=false;S.students=S.students.filter(function(s){return s.id!==cur});save();list()}
+async function backup(){var m=document.getElementById("bm");try{await saveFile("backup-alunos-"+today()+".json",JSON.stringify(S,null,1));S.lastBackup=Date.now();save();list();document.getElementById("bm").textContent="Backup salvo."}catch(e){m.textContent=(e&&e.code==="declined")?"Backup cancelado.":"Não foi possível salvar o backup."}}
+function restore(inp){var m=document.getElementById("bm"),fl=inp.files[0];if(!fl)return;var rd=new FileReader();rd.onload=function(){try{var o=JSON.parse(rd.result);if(!o||!Array.isArray(o.students)||!Array.isArray(o.subjects))throw 0;S=o;migrate();save();list();document.getElementById("bm").textContent="Backup restaurado."}catch(e){m.textContent="Arquivo de backup inválido."}};rd.readAsText(fl)}
+list();
+</script>
+<script>if("serviceWorker"in navigator&&location.protocol.indexOf("http")===0){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}</script>
+</body>
+</html>
